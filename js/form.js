@@ -4,76 +4,59 @@ botaoAdicionar.addEventListener("click", function(event) {
 
     var form = document.querySelector("#form-adiciona");
 
-    //Extraindo informaçoes do Paciente do Form    
     var paciente = obtemPacienteDoFormulario(form);
-   
-    //Validar Erros
+
     var erros = validaPaciente(paciente);
 
-    if(erros.length > 0) {
-      exibeMensagensErro(erros);
-      return;
-      }
+    if (erros.length > 0) {
+        exibeMensagensDeErro(erros);
 
-    //Cria um Tr do paciente
-    var pacienteTr = montarTr(paciente);
-    
-    // Adiciona um novo paciente na tabela 
-    var tabela = document.querySelector("#tabela-pacientes");
-    tabela.appendChild(pacienteTr);
+        return;
+    }
+
+    adicionaPacienteNaTabela(paciente);
+
     form.reset();
-    
-    var mensagensErro = document.querySelector("#mensagem-erro");
-    mensagensErro.innerHTML = " ";
+
+    var mensagensErro = document.querySelector("#mensagens-erro");
+    mensagensErro.innerHTML = "";
+
 });
 
-    // Exibe mensagem de Errores na tela 
-    function exibeMensagensErro(erros) {
-    var ul = document.querySelector("#mensagens-error");
-    ul.innerHTML = "";
+function obtemPacienteDoFormulario(form) {
 
-    erros.forEach(function(erro){
-        var li = document.createElement("li");
-        li.textContent = erro;
-        ul.appendChild(li);
-    });
+    var paciente = {
+        nome: form.nome.value,
+        peso: form.peso.value,
+        altura: form.altura.value,
+        gordura: form.gordura.value,
+        imc: calculaImc(form.peso.value, form.altura.value)
+    }
+
+    return paciente;
 }
 
-function obtemPacienteDoFormulario(form){
-var paciente = {
-    nome : form.nome.value,
-    peso : form.peso.value,
-    altura : form.altura.value,
-    gordura : form.gordura.value,
-    imc : calculaImc(form.peso.value , form.altura.value),
-}
-return paciente;
-}
-
-function montarTr(paciente){
-
+function montaTr(paciente) {
     var pacienteTr = document.createElement("tr");
     pacienteTr.classList.add("paciente");
-   
-    pacienteTr.appendChild(montarTd(paciente.nome, "info-nome"));
-    pacienteTr.appendChild(montarTd(paciente.peso, "info-peso"));
-    pacienteTr.appendChild(montarTd(paciente.altura, "info-altura"));
-    pacienteTr.appendChild(montarTd(paciente.altura, "info-altura"));
-    pacienteTr.appendChild(montarTd(paciente.imc, "info-imc"));
+
+    pacienteTr.appendChild(montaTd(paciente.nome, "info-nome"));
+    pacienteTr.appendChild(montaTd(paciente.peso, "info-peso"));
+    pacienteTr.appendChild(montaTd(paciente.altura, "info-altura"));
+    pacienteTr.appendChild(montaTd(paciente.gordura, "info-gordura"));
+    pacienteTr.appendChild(montaTd(paciente.imc, "info-imc"));
 
     return pacienteTr;
 }
 
-function montarTd(dado,classe) {
-   var td = document.createElement("td");
-   td.textContent = dado;
-   td.classList.add(classe);
+function montaTd(dado, classe) {
+    var td = document.createElement("td");
+    td.classList.add(classe);
+    td.textContent = dado;
 
-return td;
-
+    return td;
 }
 
-// form.js
 function validaPaciente(paciente) {
 
     var erros = [];
@@ -103,4 +86,18 @@ function validaPaciente(paciente) {
     }
 
     return erros;
+}
+function exibeMensagensDeErro(erros) {
+    var ul = document.querySelector("#mensagens-error"); ul.innerHTML = "";
+     erros.forEach(function(erro){
+        var li = document.createElement("li");
+        li.textContent = erro;
+        ul.appendChild(li);
+     });
+    }
+
+function adicionaPacienteNaTabela(paciente) {
+    var pacienteTr = montaTr(paciente);
+    var tabela = document.querySelector("#tabela-pacientes");
+    tabela.appendChild(pacienteTr);
 }
